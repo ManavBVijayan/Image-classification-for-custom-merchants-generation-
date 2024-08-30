@@ -1,12 +1,12 @@
-from PIL import Image
-import numpy as np
-import matplotlib.pyplot as plt
-from keras.models import load_model
+from PIL import Image #type:ignore
+import numpy as np #type:ignore
+import matplotlib.pyplot as plt #type:ignore
+from keras.models import load_model #type:ignore
 import os
 
 # Define constants
 TARGET_SIZE = (28, 28)  # Size used for Fashion MNIST
-MODEL_PATH = '/Users/alkye/Desktop/Image_classification/fashion_mnist_model.h5'  # Path to your trained model
+MODEL_PATH = '/Users/alkye/Desktop/Image_classification/fashion_mnist_model_augmented.h5'  # Path to your trained model
 CLASS_LABELS = [
     'T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
     'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot'
@@ -28,7 +28,9 @@ def load_cnn_model(model_path=MODEL_PATH):
 def predict_clothing(image_array, model):
     prediction = model.predict(image_array)
     predicted_class = np.argmax(prediction, axis=1)
-    return predicted_class
+    confidence_scores = prediction[0]  # Get confidence scores for each class
+    return predicted_class, confidence_scores
+
 
 def get_clothing_label(predicted_class):
     return CLASS_LABELS[predicted_class[0]]
@@ -54,8 +56,9 @@ def visualize_image(original_image, preprocessed_image, label):
 def classify_clothing(image_path):
     image_array, original_image = preprocess_image(image_path)
     model = load_cnn_model()
-    predicted_class = predict_clothing(image_array, model)
+    predicted_class, confidence_scores = predict_clothing(image_array, model)
     clothing_label = get_clothing_label(predicted_class)
+    print("confidence score: ",confidence_scores)
     
     # Visualize the images and prediction
     visualize_image(original_image, image_array[0], clothing_label)
