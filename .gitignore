@@ -1,2 +1,5 @@
 venv
 Dataset
+fashion_mnist_model.h5
+fashion_mnist_model_augmented.h5
+clothing_classifier_model.h5
